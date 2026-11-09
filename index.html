@@ -147,6 +147,7 @@
       align-items: center;
       gap: 8px;
       border: 1px solid rgba(255, 255, 255, 0.15);
+      cursor: pointer;
     }
 
     .btn-cta:hover {
@@ -241,6 +242,7 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
+      cursor: pointer;
     }
 
     .btn-secondary:hover {
@@ -305,7 +307,7 @@
       border-radius: 18px;
       overflow: hidden;
       background: #0f172a;
-      aspect-ratio: 16/9;
+      aspect-ratio: 16/10;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -315,6 +317,7 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
+      object-position: center top;
       display: block;
       transition: transform 0.5s ease;
     }
@@ -359,7 +362,7 @@
     /* Section Headers */
     .section-header {
       text-align: center;
-      max-width: 700px;
+      max-width: 720px;
       margin: 0 auto 4rem auto;
     }
 
@@ -463,9 +466,9 @@
 
     .video-card:hover .play-overlay-button {
       transform: translate(-50%, -50%) scale(1.15);
-      background: #ff0000;
-      border-color: #ff0000;
-      box-shadow: 0 0 30px rgba(255, 0, 0, 0.7);
+      background: #6366f1;
+      border-color: #818cf8;
+      box-shadow: 0 0 30px rgba(99, 102, 241, 0.7);
     }
 
     .video-info {
@@ -497,6 +500,60 @@
     .video-card:hover .video-action-tag {
       color: #fff;
       gap: 9px;
+    }
+
+    /* Workflow Pipeline Section */
+    .workflow-section {
+      padding: 6rem 0;
+      position: relative;
+    }
+
+    .workflow-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      position: relative;
+    }
+
+    .workflow-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 22px;
+      padding: 2.2rem;
+      backdrop-filter: blur(12px);
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .workflow-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(99, 102, 241, 0.4);
+      box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.5);
+    }
+
+    .step-number {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2.8rem;
+      font-weight: 800;
+      line-height: 1;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.7), rgba(6, 182, 212, 0.3));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 1rem;
+    }
+
+    .workflow-card h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.75rem;
+    }
+
+    .workflow-card p {
+      color: var(--text-muted);
+      font-size: 0.92rem;
+      line-height: 1.6;
     }
 
     /* Experience Section */
@@ -583,7 +640,7 @@
       color: var(--text-muted);
     }
 
-    /* Sponsors Section */
+    /* Ecosystem Section */
     .sponsors-section {
       padding: 6rem 0;
       background: linear-gradient(180deg, transparent, rgba(15, 23, 42, 0.5), transparent);
@@ -752,6 +809,95 @@
       flex-wrap: wrap;
     }
 
+    /* Video Lightbox Modal */
+    .video-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(7, 9, 19, 0.88);
+      backdrop-filter: blur(16px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .video-modal.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .video-modal-content {
+      position: relative;
+      width: 100%;
+      max-width: 920px;
+      background: #0f172a;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9);
+      transform: scale(0.95);
+      transition: transform 0.3s ease;
+    }
+
+    .video-modal.active .video-modal-content {
+      transform: scale(1);
+    }
+
+    .video-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .video-modal-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: #fff;
+    }
+
+    .modal-close-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.4rem;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .modal-close-btn:hover {
+      color: #fff;
+    }
+
+    .video-modal-iframe-box {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%;
+      background: #000;
+    }
+
+    .video-modal-iframe-box iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .video-modal-footer {
+      padding: 0.9rem 1.5rem;
+      display: flex;
+      justify-content: flex-end;
+      background: rgba(15, 23, 42, 0.9);
+    }
+
     /* Footer */
     footer {
       border-top: 1px solid var(--card-border);
@@ -773,6 +919,7 @@
     @media (max-width: 992px) {
       .hero-grid { grid-template-columns: 1fr; gap: 3rem; }
       .stats-grid { grid-template-columns: 1fr; }
+      .workflow-grid { grid-template-columns: 1fr; }
       .hero-title { font-size: 2.8rem; }
     }
 
@@ -802,8 +949,9 @@
       <ul class="nav-links">
         <li><a href="#about">About</a></li>
         <li><a href="#videos">Our Videos</a></li>
+        <li><a href="#process">Process</a></li>
         <li><a href="#experience">Experience</a></li>
-        <li><a href="#sponsors">Sponsors</a></li>
+        <li><a href="#ecosystem">Ecosystem</a></li>
       </ul>
       <a href="#contact" class="btn-cta">
         <i class="fa-solid fa-envelope"></i> Contact Us
@@ -864,8 +1012,7 @@
         <div class="founder-showcase-container">
           <div class="founder-showcase-card" id="tilt-card">
             <div class="founder-image-wrapper">
-              <!-- Directly configured for founder.jpg -->
-              <img src="founder.jpg" alt="Keshav Shastry - Founder">
+              <img src="founder.jpg" alt="Keshav Shastry - Founder" onerror="this.src='https://images.unsplash.com/photo-1534972195531-a756b1126f25?auto=format&fit=crop&w=800&q=80'">
             </div>
             <div class="founder-info-overlay">
               <div class="founder-name-tag">
@@ -879,17 +1026,17 @@
       </div>
     </section>
 
-    <!-- Our Videos Section (Clickable Thumbnails) -->
+    <!-- Our Videos Section (Modal Preview Enabled) -->
     <section class="portfolio-section" id="videos">
       <div class="section-header">
         <span class="section-sub">Showcase</span>
         <h2 class="section-title">Videos We Have Created</h2>
-        <p class="section-desc">Click any video card or thumbnail to watch the animation directly on YouTube.</p>
+        <p class="section-desc">Click any video card below to watch the preview directly or stream on YouTube.</p>
       </div>
 
       <div class="video-grid">
         <!-- Video 1 -->
-        <a href="https://www.youtube.com/watch?v=ALzQ5ogSnMo" target="_blank" rel="noopener noreferrer" class="video-card">
+        <div class="video-card" onclick="openVideoModal('ALzQ5ogSnMo', 'Epic Animation Showcase #1')">
           <div class="video-thumbnail-container">
             <img src="https://img.youtube.com/vi/ALzQ5ogSnMo/hqdefault.jpg" alt="Animation Video 1">
             <div class="play-overlay-button">
@@ -899,13 +1046,13 @@
           <div class="video-info">
             <span class="video-title">Epic Animation Showcase #1</span>
             <span class="video-action-tag">
-              Watch Video <i class="fa-solid fa-arrow-up-right-from-square"></i>
+              Watch Now <i class="fa-solid fa-circle-play"></i>
             </span>
           </div>
-        </a>
+        </div>
 
         <!-- Video 2 -->
-        <a href="https://www.youtube.com/watch?v=76g_mAL10-A" target="_blank" rel="noopener noreferrer" class="video-card">
+        <div class="video-card" onclick="openVideoModal('76g_mAL10-A', 'Cinematic Story Episode #2')">
           <div class="video-thumbnail-container">
             <img src="https://img.youtube.com/vi/76g_mAL10-A/hqdefault.jpg" alt="Animation Video 2">
             <div class="play-overlay-button">
@@ -915,13 +1062,13 @@
           <div class="video-info">
             <span class="video-title">Cinematic Story Episode #2</span>
             <span class="video-action-tag">
-              Watch Video <i class="fa-solid fa-arrow-up-right-from-square"></i>
+              Watch Now <i class="fa-solid fa-circle-play"></i>
             </span>
           </div>
-        </a>
+        </div>
 
         <!-- Video 3 -->
-        <a href="https://www.youtube.com/watch?v=0Oq-WRqRUHg" target="_blank" rel="noopener noreferrer" class="video-card">
+        <div class="video-card" onclick="openVideoModal('0Oq-WRqRUHg', 'Animated Action Feature #3')">
           <div class="video-thumbnail-container">
             <img src="https://img.youtube.com/vi/0Oq-WRqRUHg/hqdefault.jpg" alt="Animation Video 3">
             <div class="play-overlay-button">
@@ -931,13 +1078,13 @@
           <div class="video-info">
             <span class="video-title">Animated Action Feature #3</span>
             <span class="video-action-tag">
-              Watch Video <i class="fa-solid fa-arrow-up-right-from-square"></i>
+              Watch Now <i class="fa-solid fa-circle-play"></i>
             </span>
           </div>
-        </a>
+        </div>
 
         <!-- Video 4 -->
-        <a href="https://www.youtube.com/watch?v=h6d-u5VBbjI" target="_blank" rel="noopener noreferrer" class="video-card">
+        <div class="video-card" onclick="openVideoModal('h6d-u5VBbjI', 'Hero Cinematic Sequence #4')">
           <div class="video-thumbnail-container">
             <img src="https://img.youtube.com/vi/h6d-u5VBbjI/hqdefault.jpg" alt="Animation Video 4">
             <div class="play-overlay-button">
@@ -947,13 +1094,13 @@
           <div class="video-info">
             <span class="video-title">Hero Cinematic Sequence #4</span>
             <span class="video-action-tag">
-              Watch Video <i class="fa-solid fa-arrow-up-right-from-square"></i>
+              Watch Now <i class="fa-solid fa-circle-play"></i>
             </span>
           </div>
-        </a>
+        </div>
 
         <!-- Video 5 -->
-        <a href="https://www.youtube.com/watch?v=kskX9liuDBk" target="_blank" rel="noopener noreferrer" class="video-card">
+        <div class="video-card" onclick="openVideoModal('kskX9liuDBk', 'Dramatic Action Story #5')">
           <div class="video-thumbnail-container">
             <img src="https://img.youtube.com/vi/kskX9liuDBk/hqdefault.jpg" alt="Animation Video 5">
             <div class="play-overlay-button">
@@ -963,13 +1110,13 @@
           <div class="video-info">
             <span class="video-title">Dramatic Action Story #5</span>
             <span class="video-action-tag">
-              Watch Video <i class="fa-solid fa-arrow-up-right-from-square"></i>
+              Watch Now <i class="fa-solid fa-circle-play"></i>
             </span>
           </div>
-        </a>
+        </div>
 
         <!-- Video 6 -->
-        <a href="https://www.youtube.com/watch?v=dp8B7nnvYY8" target="_blank" rel="noopener noreferrer" class="video-card">
+        <div class="video-card" onclick="openVideoModal('dp8B7nnvYY8', 'Visual Storytelling Reel #6')">
           <div class="video-thumbnail-container">
             <img src="https://img.youtube.com/vi/dp8B7nnvYY8/hqdefault.jpg" alt="Animation Video 6">
             <div class="play-overlay-button">
@@ -979,13 +1126,13 @@
           <div class="video-info">
             <span class="video-title">Visual Storytelling Reel #6</span>
             <span class="video-action-tag">
-              Watch Video <i class="fa-solid fa-arrow-up-right-from-square"></i>
+              Watch Now <i class="fa-solid fa-circle-play"></i>
             </span>
           </div>
-        </a>
+        </div>
 
         <!-- Video 7 -->
-        <a href="https://www.youtube.com/watch?v=2VdjxixpEoo" target="_blank" rel="noopener noreferrer" class="video-card">
+        <div class="video-card" onclick="openVideoModal('2VdjxixpEoo', 'Sci-Fi & Battle Chronicles #7')">
           <div class="video-thumbnail-container">
             <img src="https://img.youtube.com/vi/2VdjxixpEoo/hqdefault.jpg" alt="Animation Video 7">
             <div class="play-overlay-button">
@@ -995,13 +1142,13 @@
           <div class="video-info">
             <span class="video-title">Sci-Fi & Battle Chronicles #7</span>
             <span class="video-action-tag">
-              Watch Video <i class="fa-solid fa-arrow-up-right-from-square"></i>
+              Watch Now <i class="fa-solid fa-circle-play"></i>
             </span>
           </div>
-        </a>
+        </div>
 
         <!-- Video 8 -->
-        <a href="https://www.youtube.com/watch?v=IWDzbFMVWu0" target="_blank" rel="noopener noreferrer" class="video-card">
+        <div class="video-card" onclick="openVideoModal('IWDzbFMVWu0', 'Special Cinematic Showcase #8')">
           <div class="video-thumbnail-container">
             <img src="https://img.youtube.com/vi/IWDzbFMVWu0/hqdefault.jpg" alt="Animation Video 8">
             <div class="play-overlay-button">
@@ -1011,10 +1158,37 @@
           <div class="video-info">
             <span class="video-title">Special Cinematic Showcase #8</span>
             <span class="video-action-tag">
-              Watch Video <i class="fa-solid fa-arrow-up-right-from-square"></i>
+              Watch Now <i class="fa-solid fa-circle-play"></i>
             </span>
           </div>
-        </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- How We Work Section -->
+    <section class="workflow-section" id="process">
+      <div class="section-header">
+        <span class="section-sub">Production Pipeline</span>
+        <h2 class="section-title">How We Turn Ideas Into Film</h2>
+        <p class="section-desc">A structured creative process that takes your concept from initial prompt to full cinematic delivery.</p>
+      </div>
+
+      <div class="workflow-grid">
+        <div class="workflow-card">
+          <div class="step-number">01</div>
+          <h3>Concept & Storyboard</h3>
+          <p>We take your characters, script, or core theme and craft dynamic scene breakdowns, character poses, and key cinematic angles.</p>
+        </div>
+        <div class="workflow-card">
+          <div class="step-number">02</div>
+          <h3>Animation & Rendering</h3>
+          <p>High-energy action motions, cinematic lighting, futuristic visual FX, and precision camera movements are composed and rendered.</p>
+        </div>
+        <div class="workflow-card">
+          <div class="step-number">03</div>
+          <h3>Sound FX & Final Cut</h3>
+          <p>We sync custom ambient soundscapes, impacts, and background audio to deliver high-resolution videos ready for release.</p>
+        </div>
       </div>
     </section>
 
@@ -1047,12 +1221,12 @@
       </div>
     </section>
 
-    <!-- Sponsors Section -->
-    <section class="sponsors-section" id="sponsors">
+    <!-- Ecosystem Section (Rebranded from Sponsors) -->
+    <section class="sponsors-section" id="ecosystem">
       <div class="section-header">
-        <span class="section-sub">Partner Network</span>
-        <h2 class="section-title">Our Sponsors</h2>
-        <p class="section-desc">Click any sponsor below to visit their official website.</p>
+        <span class="section-sub">Creative Network</span>
+        <h2 class="section-title">Our Ecosystem</h2>
+        <p class="section-desc">Explore sister platforms, interactive games, and creative hubs built across our network.</p>
       </div>
 
       <div class="sponsors-grid">
@@ -1069,7 +1243,7 @@
             <p class="sponsor-desc">Digital platform for graphic stories, indie comics, and visual story issues.</p>
           </div>
           <div class="sponsor-link-badge">
-            Open Website <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            Explore Platform <i class="fa-solid fa-arrow-up-right-from-square"></i>
           </div>
         </a>
 
@@ -1086,7 +1260,7 @@
             <p class="sponsor-desc">Immersive audio stories, soundtracks, and background compositions.</p>
           </div>
           <div class="sponsor-link-badge">
-            Open Website <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            Listen Now <i class="fa-solid fa-arrow-up-right-from-square"></i>
           </div>
         </a>
 
@@ -1103,7 +1277,7 @@
             <p class="sponsor-desc">High-energy arena featuring fast puzzle battles and tactical cube matches.</p>
           </div>
           <div class="sponsor-link-badge">
-            Open Website <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            Play Game <i class="fa-solid fa-arrow-up-right-from-square"></i>
           </div>
         </a>
 
@@ -1120,7 +1294,7 @@
             <p class="sponsor-desc">Web arcade hub delivering action mini-games and interactive dynamics.</p>
           </div>
           <div class="sponsor-link-badge">
-            Open Website <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            Open Arcade <i class="fa-solid fa-arrow-up-right-from-square"></i>
           </div>
         </a>
 
@@ -1137,7 +1311,7 @@
             <p class="sponsor-desc">Creative services and platform building web apps, graphic designs, and digital content.</p>
           </div>
           <div class="sponsor-link-badge">
-            Open Website <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            Visit Agency <i class="fa-solid fa-arrow-up-right-from-square"></i>
           </div>
         </a>
 
@@ -1154,7 +1328,7 @@
             <p class="sponsor-desc">Strategic chess analytics and game analysis platform designed for players.</p>
           </div>
           <div class="sponsor-link-badge">
-            Open Website <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            Open Analytics <i class="fa-solid fa-arrow-up-right-from-square"></i>
           </div>
         </a>
       </div>
@@ -1167,9 +1341,9 @@
           <i class="fa-solid fa-envelope-open-text"></i>
         </div>
         <span class="section-sub">Get in Touch</span>
-        <h2 class="section-title">Contact Us for Animations</h2>
+        <h2 class="section-title">Order Your Custom Animation</h2>
         <p class="section-desc" style="max-width: 580px; margin: 0 auto;">
-          Want us to create an animation for your project, story, or brand? Reach out directly to founder Keshav Shastry via email.
+          Have a story, character, game trailer, or YouTube episode in mind? Send your brief directly to founder Keshav Shastry.
         </p>
 
         <a href="mailto:keshavshastry90@gmail.com" class="email-display-card">
@@ -1178,7 +1352,7 @@
 
         <div class="contact-actions">
           <a href="mailto:keshavshastry90@gmail.com?subject=Animation%20Project%20Inquiry" class="btn-cta">
-            <i class="fa-solid fa-paper-plane"></i> Send an Email
+            <i class="fa-solid fa-paper-plane"></i> Send Project Brief
           </a>
           <button onclick="navigator.clipboard.writeText('keshavshastry90@gmail.com'); alert('Email address copied to clipboard!');" class="btn-secondary">
             <i class="fa-solid fa-copy"></i> Copy Email
@@ -1187,6 +1361,24 @@
       </div>
     </section>
   </main>
+
+  <!-- Video Lightbox Modal Structure -->
+  <div class="video-modal" id="videoModal" onclick="closeModalOnBackdrop(event)">
+    <div class="video-modal-content">
+      <div class="video-modal-header">
+        <span class="video-modal-title" id="modalVideoTitle">Watch Animation</span>
+        <button class="modal-close-btn" onclick="closeVideoModal()">&times;</button>
+      </div>
+      <div class="video-modal-iframe-box">
+        <iframe id="modalIframe" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
+      <div class="video-modal-footer">
+        <a id="modalExternalLink" href="#" target="_blank" rel="noopener noreferrer" class="btn-secondary" style="font-size: 0.85rem; padding: 0.5rem 1.2rem;">
+          <i class="fa-brands fa-youtube"></i> Watch on YouTube
+        </a>
+      </div>
+    </div>
+  </div>
 
   <!-- Footer -->
   <footer>
@@ -1200,6 +1392,38 @@
 
   <!-- Three.js 3D Background & Tilt Script -->
   <script>
+    // Video Modal Handlers
+    const videoModal = document.getElementById('videoModal');
+    const modalIframe = document.getElementById('modalIframe');
+    const modalVideoTitle = document.getElementById('modalVideoTitle');
+    const modalExternalLink = document.getElementById('modalExternalLink');
+
+    function openVideoModal(videoId, title) {
+      modalVideoTitle.textContent = title;
+      modalIframe.src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0`;
+      modalExternalLink.href = `https://www.youtube.com/watch?v=${videoId}`;
+      videoModal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeVideoModal() {
+      videoModal.classList.remove('active');
+      modalIframe.src = '';
+      document.body.style.overflow = 'auto';
+    }
+
+    function closeModalOnBackdrop(event) {
+      if (event.target === videoModal) {
+        closeVideoModal();
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && videoModal.classList.contains('active')) {
+        closeVideoModal();
+      }
+    });
+
     // 3D Canvas Background
     const canvas = document.getElementById('webgl-bg');
     const scene = new THREE.Scene();
