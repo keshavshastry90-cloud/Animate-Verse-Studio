@@ -1,0 +1,1328 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Animate Verse Studio | Founded by Keshav Shastry</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+  <style>
+    :root {
+      --primary: #6366f1;
+      --primary-glow: rgba(99, 102, 241, 0.45);
+      --secondary: #06b6d4;
+      --secondary-glow: rgba(6, 182, 212, 0.4);
+      --accent: #f43f5e;
+      --bg-dark: #070913;
+      --card-bg: rgba(15, 23, 42, 0.7);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    #webgl-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    /* Ambient Lighting */
+    .glow-orb {
+      position: fixed;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      filter: blur(130px);
+      z-index: -1;
+      opacity: 0.18;
+      pointer-events: none;
+    }
+    .glow-1 { top: 10%; left: -100px; background: #4f46e5; }
+    .glow-2 { bottom: 20%; right: -100px; background: #06b6d4; }
+
+    /* Navigation Bar */
+    header {
+      position: sticky;
+      top: 0;
+      backdrop-filter: blur(20px);
+      background: rgba(7, 9, 19, 0.85);
+      border-bottom: 1px solid var(--card-border);
+      z-index: 100;
+      padding: 1.1rem 2rem;
+    }
+
+    .nav-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand-logo {
+      text-decoration: none;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 800;
+      font-size: 1.45rem;
+      letter-spacing: -0.5px;
+      color: #fff;
+      display: inline-block;
+    }
+
+    .brand-logo span {
+      background: linear-gradient(135deg, #fff 40%, #a5b4fc 80%, var(--secondary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.75rem;
+      list-style: none;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .nav-links a:hover {
+      color: #fff;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      width: 0%;
+      height: 2px;
+      bottom: -6px;
+      left: 0;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      transition: width 0.3s ease;
+      border-radius: 2px;
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    .btn-cta {
+      background: linear-gradient(135deg, var(--primary), #4338ca);
+      color: #fff;
+      padding: 0.75rem 1.75rem;
+      border-radius: 9999px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      box-shadow: 0 10px 25px -5px var(--primary-glow);
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .btn-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 30px -5px rgba(99, 102, 241, 0.6);
+      background: linear-gradient(135deg, #6d70f5, #4f46e5);
+      color: #fff;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* Hero Section */
+    .hero-section {
+      min-height: calc(100vh - 80px);
+      display: flex;
+      align-items: center;
+      padding: 4rem 0;
+      position: relative;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      background: rgba(99, 102, 241, 0.12);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      color: #a5b4fc;
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .hero-badge i {
+      color: var(--secondary);
+      font-size: 0.9rem;
+    }
+
+    .hero-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 3.8rem;
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -1.5px;
+      margin-bottom: 1.5rem;
+    }
+
+    .text-gradient {
+      background: linear-gradient(135deg, #fff 30%, #a5b4fc 70%, var(--secondary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-desc {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      margin-bottom: 2.5rem;
+      max-width: 580px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 1.25rem;
+      align-items: center;
+      margin-bottom: 3.5rem;
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      color: #fff;
+      padding: 0.75rem 1.75rem;
+      border-radius: 9999px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.25);
+      transform: translateY(-2px);
+      color: #fff;
+    }
+
+    .hero-highlights {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--card-border);
+    }
+
+    .highlight-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .highlight-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--card-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--secondary);
+      font-size: 1.1rem;
+    }
+
+    .highlight-text h4 {
+      font-size: 0.95rem;
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .highlight-text p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* Founder Showcase Card */
+    .founder-showcase-card {
+      position: relative;
+      background: linear-gradient(145deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.85));
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 24px;
+      padding: 1.25rem;
+      box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.8), 0 0 40px -10px var(--primary-glow);
+      transform-style: preserve-3d;
+      transition: transform 0.2s ease-out;
+    }
+
+    .founder-image-wrapper {
+      position: relative;
+      border-radius: 18px;
+      overflow: hidden;
+      background: #0f172a;
+      aspect-ratio: 16/9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .founder-image-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.5s ease;
+    }
+
+    .founder-showcase-card:hover .founder-image-wrapper img {
+      transform: scale(1.03);
+    }
+
+    .founder-info-overlay {
+      padding: 1.25rem 0.5rem 0.5rem 0.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .founder-name-tag h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .founder-name-tag p {
+      font-size: 0.85rem;
+      color: var(--secondary);
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .founder-badge {
+      padding: 6px 14px;
+      border-radius: 9999px;
+      background: rgba(6, 182, 212, 0.15);
+      border: 1px solid rgba(6, 182, 212, 0.35);
+      color: #67e8f9;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Section Headers */
+    .section-header {
+      text-align: center;
+      max-width: 700px;
+      margin: 0 auto 4rem auto;
+    }
+
+    .section-sub {
+      color: var(--primary);
+      text-transform: uppercase;
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 2px;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    .section-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2.6rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 1rem;
+    }
+
+    .section-desc {
+      color: var(--text-muted);
+      font-size: 1rem;
+    }
+
+    /* Portfolio / Showcase Section */
+    .portfolio-section {
+      padding: 7rem 0 5rem 0;
+    }
+
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 2rem;
+    }
+
+    .video-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      overflow: hidden;
+      backdrop-filter: blur(12px);
+      transition: all 0.35s ease;
+      display: flex;
+      flex-direction: column;
+      text-decoration: none;
+      color: inherit;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .video-card:hover {
+      transform: translateY(-8px);
+      border-color: rgba(99, 102, 241, 0.45);
+      box-shadow: 0 20px 40px -10px rgba(99, 102, 241, 0.3);
+    }
+
+    .video-thumbnail-container {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%; /* 16:9 Aspect Ratio */
+      background: #000;
+      overflow: hidden;
+    }
+
+    .video-thumbnail-container img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease, filter 0.4s ease;
+    }
+
+    .video-card:hover .video-thumbnail-container img {
+      transform: scale(1.05);
+      filter: brightness(1.1);
+    }
+
+    .play-overlay-button {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: rgba(15, 23, 42, 0.75);
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 1.35rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(6px);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .video-card:hover .play-overlay-button {
+      transform: translate(-50%, -50%) scale(1.15);
+      background: #ff0000;
+      border-color: #ff0000;
+      box-shadow: 0 0 30px rgba(255, 0, 0, 0.7);
+    }
+
+    .video-info {
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(15, 23, 42, 0.95);
+      border-top: 1px solid var(--card-border);
+    }
+
+    .video-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #fff;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .video-action-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #38bdf8;
+      transition: gap 0.2s ease, color 0.2s ease;
+    }
+
+    .video-card:hover .video-action-tag {
+      color: #fff;
+      gap: 9px;
+    }
+
+    /* Experience Section */
+    .experience-section {
+      padding: 6rem 0;
+      position: relative;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 3rem 2.5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(12px);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top right, rgba(99, 102, 241, 0.15), transparent 70%);
+      pointer-events: none;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-8px);
+      border-color: rgba(99, 102, 241, 0.4);
+      box-shadow: 0 20px 40px -10px rgba(99, 102, 241, 0.25);
+    }
+
+    .stat-icon {
+      width: 70px;
+      height: 70px;
+      border-radius: 20px;
+      margin: 0 auto 1.5rem auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+    }
+
+    .stat-icon.subscribers {
+      background: rgba(244, 63, 94, 0.15);
+      color: #fb7185;
+      border: 1px solid rgba(244, 63, 94, 0.3);
+    }
+
+    .stat-icon.videos {
+      background: rgba(6, 182, 212, 0.15);
+      color: #22d3ee;
+      border: 1px solid rgba(6, 182, 212, 0.3);
+    }
+
+    .stat-number {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 4.2rem;
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 0.75rem;
+      background: linear-gradient(135deg, #fff 40%, #cbd5e1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .stat-label {
+      font-size: 1.25rem;
+      color: #f1f5f9;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-sublabel {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+    }
+
+    /* Sponsors Section */
+    .sponsors-section {
+      padding: 6rem 0;
+      background: linear-gradient(180deg, transparent, rgba(15, 23, 42, 0.5), transparent);
+    }
+
+    .sponsors-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 2rem;
+    }
+
+    .sponsor-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 2rem;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      backdrop-filter: blur(14px);
+      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .sponsor-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .sponsor-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      border-color: rgba(99, 102, 241, 0.4);
+      box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.6), 0 0 25px -5px var(--primary-glow);
+    }
+
+    .sponsor-card:hover::after {
+      opacity: 1;
+    }
+
+    .sponsor-top {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .sponsor-logo-box {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      color: var(--secondary);
+    }
+
+    .sponsor-title h4 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .sponsor-title span {
+      font-size: 0.8rem;
+      color: #38bdf8;
+      font-weight: 500;
+    }
+
+    .sponsor-desc {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
+
+    .sponsor-link-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #a5b4fc;
+      transition: gap 0.2s ease;
+    }
+
+    .sponsor-card:hover .sponsor-link-badge {
+      color: #fff;
+      gap: 12px;
+    }
+
+    /* Contact Section */
+    .contact-section {
+      padding: 6rem 0 8rem 0;
+      background: linear-gradient(180deg, transparent, rgba(7, 9, 19, 0.95));
+    }
+
+    .contact-card {
+      max-width: 780px;
+      margin: 0 auto;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 28px;
+      padding: 3.5rem 3rem;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7);
+      text-align: center;
+    }
+
+    .contact-icon-large {
+      width: 76px;
+      height: 76px;
+      border-radius: 22px;
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      color: #818cf8;
+      margin: 0 auto 1.75rem auto;
+    }
+
+    .email-display-card {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 1.1rem 2.2rem;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 16px;
+      margin: 2rem 0;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #38bdf8;
+      font-family: 'Space Grotesk', sans-serif;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .email-display-card:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: var(--primary);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px -5px var(--primary-glow);
+      color: #fff;
+    }
+
+    .contact-actions {
+      display: flex;
+      justify-content: center;
+      gap: 1.25rem;
+      flex-wrap: wrap;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--card-border);
+      padding: 3rem 0;
+      background: #05070d;
+      text-align: center;
+    }
+
+    .footer-text {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .footer-founder {
+      color: #fff;
+      font-weight: 600;
+    }
+
+    @media (max-width: 992px) {
+      .hero-grid { grid-template-columns: 1fr; gap: 3rem; }
+      .stats-grid { grid-template-columns: 1fr; }
+      .hero-title { font-size: 2.8rem; }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hero-highlights { grid-template-columns: 1fr; }
+      .contact-card { padding: 2.5rem 1.5rem; }
+      .email-display-card { font-size: 1.05rem; padding: 0.9rem 1.4rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient Light Orbs -->
+  <div class="glow-orb glow-1"></div>
+  <div class="glow-orb glow-2"></div>
+
+  <!-- Interactive 3D Canvas Background -->
+  <canvas id="webgl-bg"></canvas>
+
+  <!-- Navigation -->
+  <header>
+    <div class="nav-container">
+      <a href="#" class="brand-logo">
+        <span>Animate Verse Studio</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#videos">Our Videos</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#sponsors">Sponsors</a></li>
+      </ul>
+      <a href="#contact" class="btn-cta">
+        <i class="fa-solid fa-envelope"></i> Contact Us
+      </a>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <main class="container">
+    <section class="hero-section" id="about">
+      <div class="hero-grid">
+        <div class="hero-content">
+          <div class="hero-badge">
+            <i class="fa-solid fa-sparkles"></i> Animation & Visual Studio
+          </div>
+          <h1 class="hero-title">
+            BRING YOUR <br>
+            <span class="text-gradient">IMAGINATION</span> TO LIFE
+          </h1>
+          <p class="hero-desc">
+            You bring the idea, and we create your animations. Discover our dynamic stories, cinematic action, and visual universe founded by Keshav Shastry.
+          </p>
+          <div class="hero-actions">
+            <a href="#videos" class="btn-cta">
+              <i class="fa-solid fa-play"></i> Watch Our Videos
+            </a>
+            <a href="#contact" class="btn-secondary">
+              <i class="fa-solid fa-paper-plane"></i> Get in Touch
+            </a>
+          </div>
+
+          <div class="hero-highlights">
+            <div class="highlight-card">
+              <div class="highlight-icon"><i class="fa-solid fa-layer-group"></i></div>
+              <div class="highlight-text">
+                <h4>Dynamic Animation</h4>
+                <p>Custom storytelling & motion</p>
+              </div>
+            </div>
+            <div class="highlight-card">
+              <div class="highlight-icon"><i class="fa-solid fa-film"></i></div>
+              <div class="highlight-text">
+                <h4>Cinematic Visuals</h4>
+                <p>Epic scenes & trailers</p>
+              </div>
+            </div>
+            <div class="highlight-card">
+              <div class="highlight-icon"><i class="fa-solid fa-video"></i></div>
+              <div class="highlight-text">
+                <h4>Custom Videos</h4>
+                <p>Tailored video productions</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Founder Showcase Interactive Card -->
+        <div class="founder-showcase-container">
+          <div class="founder-showcase-card" id="tilt-card">
+            <div class="founder-image-wrapper">
+              <img src="Remove_professional_animation_cr…_f441d9ba.jpg" alt="Keshav Shastry - Founder" onerror="this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80'">
+            </div>
+            <div class="founder-info-overlay">
+              <div class="founder-name-tag">
+                <h3>Keshav Shastry</h3>
+                <p>FOUNDER & CREATIVE DIRECTOR</p>
+              </div>
+              <div class="founder-badge">Founder</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Our Videos Section (Clickable Thumbnails) -->
+    <section class="portfolio-section" id="videos">
+      <div class="section-header">
+        <span class="section-sub">Showcase</span>
+        <h2 class="section-title">Videos We Have Created</h2>
+        <p class="section-desc">Click any video card or thumbnail to watch the animation directly on YouTube.</p>
+      </div>
+
+      <div class="video-grid">
+        <!-- Video 1 -->
+        <a href="https://www.youtube.com/watch?v=ALzQ5ogSnMo" target="_blank" rel="noopener noreferrer" class="video-card">
+          <div class="video-thumbnail-container">
+            <img src="https://img.youtube.com/vi/ALzQ5ogSnMo/hqdefault.jpg" alt="Animation Video 1">
+            <div class="play-overlay-button">
+              <i class="fa-solid fa-play"></i>
+            </div>
+          </div>
+          <div class="video-info">
+            <span class="video-title">Epic Animation Showcase #1</span>
+            <span class="video-action-tag">
+              Watch Video <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </span>
+          </div>
+        </a>
+
+        <!-- Video 2 -->
+        <a href="https://www.youtube.com/watch?v=76g_mAL10-A" target="_blank" rel="noopener noreferrer" class="video-card">
+          <div class="video-thumbnail-container">
+            <img src="https://img.youtube.com/vi/76g_mAL10-A/hqdefault.jpg" alt="Animation Video 2">
+            <div class="play-overlay-button">
+              <i class="fa-solid fa-play"></i>
+            </div>
+          </div>
+          <div class="video-info">
+            <span class="video-title">Cinematic Story Episode #2</span>
+            <span class="video-action-tag">
+              Watch Video <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </span>
+          </div>
+        </a>
+
+        <!-- Video 3 -->
+        <a href="https://www.youtube.com/watch?v=0Oq-WRqRUHg" target="_blank" rel="noopener noreferrer" class="video-card">
+          <div class="video-thumbnail-container">
+            <img src="https://img.youtube.com/vi/0Oq-WRqRUHg/hqdefault.jpg" alt="Animation Video 3">
+            <div class="play-overlay-button">
+              <i class="fa-solid fa-play"></i>
+            </div>
+          </div>
+          <div class="video-info">
+            <span class="video-title">Animated Action Feature #3</span>
+            <span class="video-action-tag">
+              Watch Video <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </span>
+          </div>
+        </a>
+
+        <!-- Video 4 -->
+        <a href="https://www.youtube.com/watch?v=h6d-u5VBbjI" target="_blank" rel="noopener noreferrer" class="video-card">
+          <div class="video-thumbnail-container">
+            <img src="https://img.youtube.com/vi/h6d-u5VBbjI/hqdefault.jpg" alt="Animation Video 4">
+            <div class="play-overlay-button">
+              <i class="fa-solid fa-play"></i>
+            </div>
+          </div>
+          <div class="video-info">
+            <span class="video-title">Hero Cinematic Sequence #4</span>
+            <span class="video-action-tag">
+              Watch Video <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </span>
+          </div>
+        </a>
+
+        <!-- Video 5 -->
+        <a href="https://www.youtube.com/watch?v=kskX9liuDBk" target="_blank" rel="noopener noreferrer" class="video-card">
+          <div class="video-thumbnail-container">
+            <img src="https://img.youtube.com/vi/kskX9liuDBk/hqdefault.jpg" alt="Animation Video 5">
+            <div class="play-overlay-button">
+              <i class="fa-solid fa-play"></i>
+            </div>
+          </div>
+          <div class="video-info">
+            <span class="video-title">Dramatic Action Story #5</span>
+            <span class="video-action-tag">
+              Watch Video <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </span>
+          </div>
+        </a>
+
+        <!-- Video 6 -->
+        <a href="https://www.youtube.com/watch?v=dp8B7nnvYY8" target="_blank" rel="noopener noreferrer" class="video-card">
+          <div class="video-thumbnail-container">
+            <img src="https://img.youtube.com/vi/dp8B7nnvYY8/hqdefault.jpg" alt="Animation Video 6">
+            <div class="play-overlay-button">
+              <i class="fa-solid fa-play"></i>
+            </div>
+          </div>
+          <div class="video-info">
+            <span class="video-title">Visual Storytelling Reel #6</span>
+            <span class="video-action-tag">
+              Watch Video <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </span>
+          </div>
+        </a>
+
+        <!-- Video 7 -->
+        <a href="https://www.youtube.com/watch?v=2VdjxixpEoo" target="_blank" rel="noopener noreferrer" class="video-card">
+          <div class="video-thumbnail-container">
+            <img src="https://img.youtube.com/vi/2VdjxixpEoo/hqdefault.jpg" alt="Animation Video 7">
+            <div class="play-overlay-button">
+              <i class="fa-solid fa-play"></i>
+            </div>
+          </div>
+          <div class="video-info">
+            <span class="video-title">Sci-Fi & Battle Chronicles #7</span>
+            <span class="video-action-tag">
+              Watch Video <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </span>
+          </div>
+        </a>
+
+        <!-- Video 8 -->
+        <a href="https://www.youtube.com/watch?v=IWDzbFMVWu0" target="_blank" rel="noopener noreferrer" class="video-card">
+          <div class="video-thumbnail-container">
+            <img src="https://img.youtube.com/vi/IWDzbFMVWu0/hqdefault.jpg" alt="Animation Video 8">
+            <div class="play-overlay-button">
+              <i class="fa-solid fa-play"></i>
+            </div>
+          </div>
+          <div class="video-info">
+            <span class="video-title">Special Cinematic Showcase #8</span>
+            <span class="video-action-tag">
+              Watch Video <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section class="experience-section" id="experience">
+      <div class="section-header">
+        <span class="section-sub">Proven Track Record</span>
+        <h2 class="section-title">Our Experience</h2>
+        <p class="section-desc">We bring substantial creator experience and community reach across our animation projects.</p>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon subscribers">
+            <i class="fa-solid fa-users-viewfinder"></i>
+          </div>
+          <div class="stat-number">15,000+</div>
+          <div class="stat-label">Subscribers</div>
+          <div class="stat-sublabel">Growing community following our creative releases and videos.</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon videos">
+            <i class="fa-solid fa-film"></i>
+          </div>
+          <div class="stat-number">1,500+</div>
+          <div class="stat-label">Videos</div>
+          <div class="stat-sublabel">Extensive production library of published visual creations.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sponsors Section -->
+    <section class="sponsors-section" id="sponsors">
+      <div class="section-header">
+        <span class="section-sub">Partner Network</span>
+        <h2 class="section-title">Our Sponsors</h2>
+        <p class="section-desc">Click any sponsor below to visit their official website.</p>
+      </div>
+
+      <div class="sponsors-grid">
+        <!-- ComixHub -->
+        <a href="https://keshavshastry90-cloud.github.io/ComixHub/" target="_blank" rel="noopener noreferrer" class="sponsor-card">
+          <div>
+            <div class="sponsor-top">
+              <div class="sponsor-logo-box"><i class="fa-solid fa-book-open"></i></div>
+              <div class="sponsor-title">
+                <h4>ComixHub</h4>
+                <span>Comics & Graphic Stories</span>
+              </div>
+            </div>
+            <p class="sponsor-desc">Digital platform for graphic stories, indie comics, and visual story issues.</p>
+          </div>
+          <div class="sponsor-link-badge">
+            Open Website <i class="fa-solid fa-arrow-up-right-from-square"></i>
+          </div>
+        </a>
+
+        <!-- Sangeet Hub Audio -->
+        <a href="https://keshavshastry90-cloud.github.io/-Sangeet-Hub-Audio/" target="_blank" rel="noopener noreferrer" class="sponsor-card">
+          <div>
+            <div class="sponsor-top">
+              <div class="sponsor-logo-box"><i class="fa-solid fa-headphones"></i></div>
+              <div class="sponsor-title">
+                <h4>Sangeet Hub Audio</h4>
+                <span>Soundscapes & Music Hub</span>
+              </div>
+            </div>
+            <p class="sponsor-desc">Immersive audio stories, soundtracks, and background compositions.</p>
+          </div>
+          <div class="sponsor-link-badge">
+            Open Website <i class="fa-solid fa-arrow-up-right-from-square"></i>
+          </div>
+        </a>
+
+        <!-- CubeClash -->
+        <a href="https://keshavshastry90-cloud.github.io/CubeClash/" target="_blank" rel="noopener noreferrer" class="sponsor-card">
+          <div>
+            <div class="sponsor-top">
+              <div class="sponsor-logo-box"><i class="fa-solid fa-cubes-stacked"></i></div>
+              <div class="sponsor-title">
+                <h4>CubeClash</h4>
+                <span>Strategic Arena & Interactive Games</span>
+              </div>
+            </div>
+            <p class="sponsor-desc">High-energy arena featuring fast puzzle battles and tactical cube matches.</p>
+          </div>
+          <div class="sponsor-link-badge">
+            Open Website <i class="fa-solid fa-arrow-up-right-from-square"></i>
+          </div>
+        </a>
+
+        <!-- Shastry Arcade Hub -->
+        <a href="https://keshavshastry90-cloud.github.io/Shastry-Arcade-Hub/" target="_blank" rel="noopener noreferrer" class="sponsor-card">
+          <div>
+            <div class="sponsor-top">
+              <div class="sponsor-logo-box"><i class="fa-solid fa-gamepad"></i></div>
+              <div class="sponsor-title">
+                <h4>Shastry Arcade Hub</h4>
+                <span>Arcade Portal & Mini-Games</span>
+              </div>
+            </div>
+            <p class="sponsor-desc">Web arcade hub delivering action mini-games and interactive dynamics.</p>
+          </div>
+          <div class="sponsor-link-badge">
+            Open Website <i class="fa-solid fa-arrow-up-right-from-square"></i>
+          </div>
+        </a>
+
+        <!-- CreateForMe -->
+        <a href="https://createforme.in/" target="_blank" rel="noopener noreferrer" class="sponsor-card">
+          <div>
+            <div class="sponsor-top">
+              <div class="sponsor-logo-box"><i class="fa-solid fa-palette"></i></div>
+              <div class="sponsor-title">
+                <h4>CreateForMe</h4>
+                <span>Creative Studio & Web Platform</span>
+              </div>
+            </div>
+            <p class="sponsor-desc">Creative services and platform building web apps, graphic designs, and digital content.</p>
+          </div>
+          <div class="sponsor-link-badge">
+            Open Website <i class="fa-solid fa-arrow-up-right-from-square"></i>
+          </div>
+        </a>
+
+        <!-- Chess Adapt -->
+        <a href="https://mycreateforme-dotcom.github.io/Chess-Adapt-/" target="_blank" rel="noopener noreferrer" class="sponsor-card">
+          <div>
+            <div class="sponsor-top">
+              <div class="sponsor-logo-box"><i class="fa-solid fa-chess-knight"></i></div>
+              <div class="sponsor-title">
+                <h4>Chess Adapt</h4>
+                <span>Tactical Chess Platform</span>
+              </div>
+            </div>
+            <p class="sponsor-desc">Strategic chess analytics and game analysis platform designed for players.</p>
+          </div>
+          <div class="sponsor-link-badge">
+            Open Website <i class="fa-solid fa-arrow-up-right-from-square"></i>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact-section" id="contact">
+      <div class="contact-card">
+        <div class="contact-icon-large">
+          <i class="fa-solid fa-envelope-open-text"></i>
+        </div>
+        <span class="section-sub">Get in Touch</span>
+        <h2 class="section-title">Contact Us for Animations</h2>
+        <p class="section-desc" style="max-width: 580px; margin: 0 auto;">
+          Want us to create an animation for your project, story, or brand? Reach out directly to founder Keshav Shastry via email.
+        </p>
+
+        <a href="mailto:keshavshastry90@gmail.com" class="email-display-card">
+          <i class="fa-solid fa-at"></i> keshavshastry90@gmail.com
+        </a>
+
+        <div class="contact-actions">
+          <a href="mailto:keshavshastry90@gmail.com?subject=Animation%20Project%20Inquiry" class="btn-cta">
+            <i class="fa-solid fa-paper-plane"></i> Send an Email
+          </a>
+          <button onclick="navigator.clipboard.writeText('keshavshastry90@gmail.com'); alert('Email address copied to clipboard!');" class="btn-secondary">
+            <i class="fa-solid fa-copy"></i> Copy Email
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <p class="footer-text">
+        &copy; 2026 <strong>Animate Verse Studio</strong>. All rights reserved. <br>
+        Founded by <span class="footer-founder">Keshav Shastry</span>.
+      </p>
+    </div>
+  </footer>
+
+  <!-- Three.js 3D Background & Tilt Script -->
+  <script>
+    // 3D Canvas Background
+    const canvas = document.getElementById('webgl-bg');
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x070913, 0.0018);
+
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.z = 40;
+
+    const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    // Particle Stars
+    const particleCount = 1800;
+    const geometry = new THREE.BufferGeometry();
+    const positions = new Float32Array(particleCount * 3);
+    const colors = new Float32Array(particleCount * 3);
+
+    const c1 = new THREE.Color(0x6366f1);
+    const c2 = new THREE.Color(0x06b6d4);
+
+    for (let i = 0; i < particleCount * 3; i += 3) {
+      positions[i] = (Math.random() - 0.5) * 160;
+      positions[i + 1] = (Math.random() - 0.5) * 160;
+      positions[i + 2] = (Math.random() - 0.5) * 120;
+
+      const mixed = c1.clone().lerp(c2, Math.random());
+      colors[i] = mixed.r;
+      colors[i + 1] = mixed.g;
+      colors[i + 2] = mixed.b;
+    }
+
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+    const material = new THREE.PointsMaterial({
+      size: 0.65,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.85
+    });
+
+    const particles = new THREE.Points(geometry, material);
+    scene.add(particles);
+
+    // Floating 3D Wireframe Geometries
+    const geoIcosa = new THREE.IcosahedronGeometry(7, 1);
+    const wireMat = new THREE.MeshBasicMaterial({
+      color: 0x4f46e5,
+      wireframe: true,
+      transparent: true,
+      opacity: 0.22
+    });
+    const icosa = new THREE.Mesh(geoIcosa, wireMat);
+    icosa.position.set(22, 5, -10);
+    scene.add(icosa);
+
+    const geoTorus = new THREE.TorusGeometry(8, 1.2, 16, 50);
+    const torusMat = new THREE.MeshBasicMaterial({
+      color: 0x06b6d4,
+      wireframe: true,
+      transparent: true,
+      opacity: 0.18
+    });
+    const torus = new THREE.Mesh(geoTorus, torusMat);
+    torus.position.set(-25, -10, -15);
+    scene.add(torus);
+
+    // Mouse Tracking Parallax
+    let mouseX = 0, mouseY = 0;
+    let targetX = 0, targetY = 0;
+
+    window.addEventListener('mousemove', (e) => {
+      mouseX = (e.clientX - window.innerWidth / 2) * 0.001;
+      mouseY = (e.clientY - window.innerHeight / 2) * 0.001;
+    });
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    function animate() {
+      requestAnimationFrame(animate);
+
+      targetX += (mouseX - targetX) * 0.05;
+      targetY += (mouseY - targetY) * 0.05;
+
+      particles.rotation.y += 0.0008;
+      particles.rotation.x += 0.0003;
+
+      icosa.rotation.x += 0.004;
+      icosa.rotation.y += 0.005;
+
+      torus.rotation.x -= 0.003;
+      torus.rotation.z += 0.004;
+
+      camera.position.x = targetX * 15;
+      camera.position.y = -targetY * 15;
+      camera.lookAt(scene.position);
+
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    // 3D Card Hover Tilt Effect for Founder Showcase
+    const tiltCard = document.getElementById('tilt-card');
+    if (tiltCard) {
+      tiltCard.addEventListener('mousemove', (e) => {
+        const rect = tiltCard.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        const rotX = -(y / rect.height) * 16;
+        const rotY = (x / rect.width) * 16;
+        tiltCard.style.transform = `perspective(1000px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale3d(1.02, 1.02, 1.02)`;
+      });
+
+      tiltCard.addEventListener('mouseleave', () => {
+        tiltCard.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+      });
+    }
+  </script>
+</body>
+</html>
+
